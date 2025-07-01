@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Notes App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* Inter font from Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 sm:p-8">
+    <div class="max-w-xl mx-auto w-full bg-white rounded-lg shadow-xl p-6 sm:p-8">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-6 text-center">My Simple Notes 📝</h1>
+
+        <!-- Add Note Form -->
+        <form action="/add-note" method="post" class="mb-8 p-4 bg-blue-50 rounded-lg shadow-md">
+            <div class="mb-4">
+                <label for="note" class="block text-gray-700 text-sm font-semibold mb-2">New Note:</label>
+                <textarea id="note" name="note" rows="3" class="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Write your note here..." required></textarea>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-200">
+                Add Note
+            </button>
+        </form>
+
+        <!-- Notes Display -->
+        <div class="space-y-4">
+            {% if notes %}
+                {% for note in notes %}
+                <div class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-800 text-lg mb-2 whitespace-pre-wrap">{{ note.note }}</p>
+                        <small class="text-gray-500">Created: {{ note.created_at.strftime('%Y-%m-%d %H:%M') if note.created_at else 'N/A' }}</small>
+                    </div>
+                    <!-- Delete Form for each note -->
+                    <form action="/delete-note/{{ note.id }}" method="post" onsubmit="return confirm('Are you sure you want to delete this note?');">
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-200 text-sm">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-gray-600 text-xl py-8">No notes yet. Add one above!</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
